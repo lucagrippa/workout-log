@@ -4,7 +4,7 @@ import json
 
 # import the fitdown parser like this due to dash in the module name
 import importlib  
-fitdown = importlib.import_module("fitdown-py.fitdown_parser")
+fitdown = importlib.import_module("docs.data.fitdown-py.fitdown_parser")
 
 # Load all workouts
 workouts_folder = "docs/data/workouts"
