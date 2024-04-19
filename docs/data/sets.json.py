@@ -7,13 +7,13 @@ import json
 # fitdown = importlib.import_module("fitdown-py.fitdown_parser")
 
 import importlib.util
-import sys
+# import sys
 
-# Add the parent directory to the sys.path
-sys.path.append("..")
+# # Add the parent directory to the sys.path
+# sys.path.append("..")
 
 # Import the module
-spec = importlib.util.spec_from_file_location("fitdown_parser", "../fitdown-py/fitdown_parser.py")
+spec = importlib.util.spec_from_file_location("fitdown_parser", "./fitdown-py/fitdown_parser.py")
 fitdown_parser = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fitdown_parser)
 
