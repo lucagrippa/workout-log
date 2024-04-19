@@ -13,7 +13,7 @@ import importlib.util
 # sys.path.append("..")
 
 # Import the module
-spec = importlib.util.spec_from_file_location("fitdown_parser", "data/docs/fitdown-py/fitdown_parser.py")
+spec = importlib.util.spec_from_file_location("fitdown_parser", "docs/data/fitdown-py/fitdown_parser.py")
 fitdown_parser = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fitdown_parser)
 
