@@ -1,20 +1,25 @@
 // See https://observablehq.com/framework/config for documentation.
 export default {
   // The project’s title; used in the sidebar and webpage titles.
-  title: "Fitdown Workout Log",
+  title: "Weightlifting Dashboard",
 
   // The pages and sections in the sidebar. If you don’t specify this option,
   // all pages will be listed in alphabetical order. Listing pages explicitly
   // lets you organize them into sections and have unlisted pages.
-  // pages: [
-  //   {
-  //     name: "Examples",
-  //     pages: [
-  //       {name: "Dashboard", path: "/example-dashboard"},
-  //       {name: "Report", path: "/example-report"}
-  //     ]
-  //   }
-  // ],
+  pages: [
+    {name: "Chest Day", path: "/chest-day"},
+    {name: "Back Day", path: "/back-day"},
+    {name: "Leg Day", path: "/leg-day"},
+    // {name: "Example", path: "/example"},
+    // {
+    //   name: "Examples",
+    //   pages: [
+    //     {name: "Chest Day", path: "/chest-day"},
+    //     {name: "Back Day", path: "/back-day"},
+    //     {name: "Leg Day", path: "/leg-day"}
+    //   ]
+    // }
+  ],
 
   // Some additional configuration options and their defaults:
   // theme: "default", // try "light", "dark", "slate", etc.
