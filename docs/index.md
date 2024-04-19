@@ -1,115 +1,128 @@
 ---
+theme: dashboard
+title: Weightlifting dashboard
 toc: false
 ---
+<head>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-<style>
-
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: var(--sans-serif);
-  margin: 4rem 0 8rem;
-  text-wrap: balance;
-  text-align: center;
-}
-
-.hero h1 {
-  margin: 2rem 0;
-  max-width: none;
-  font-size: 14vw;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(30deg, var(--theme-foreground-focus), currentColor);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.hero h2 {
-  margin: 0;
-  max-width: 34em;
-  font-size: 20px;
-  font-style: initial;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--theme-foreground-muted);
-}
-
-@media (min-width: 640px) {
-  .hero h1 {
-    font-size: 90px;
-  }
-}
-
-</style>
-
-<div class="hero">
-  <h1>Hello, Observable Framework</h1>
-  <h2>Welcome to your new project! Edit&nbsp;<code style="font-size: 90%;">docs/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+<div class="flex flex-col font-sans">
+  <h1 class="py-4 font-bold text-4xl">Weightlifting dashboard 💪</h1>
+  <h2 class="font-normal text-xl not-italic">Get quick stats on all of the exercises I'm performing at the gym.</h2>
 </div>
 
-<div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "Your awesomeness over time 🚀",
-      subtitle: "Up and to the right!",
-      width,
-      y: {grid: true, label: "Awesomeness"},
-      marks: [
-        Plot.ruleY([0]),
-        Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ]
-    }))
-  }</div>
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "How big are penguins, anyway? 🐧",
-      width,
-      grid: true,
-      x: {label: "Body mass (g)"},
-      y: {label: "Flipper length (mm)"},
-      color: {legend: true},
-      marks: [
-        Plot.linearRegressionY(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species"}),
-        Plot.dot(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species", tip: true})
-      ]
-    }))
-  }</div>
-</div>
-
+<!-- Imports -->
 ```js
-const aapl = FileAttachment("aapl.csv").csv({typed: true});
-const penguins = FileAttachment("penguins.csv").csv({typed: true});
+import { calculateStreak, calculateDaysExercisedThisWeek, calculateDaysExercisedThisMonth, calculateDaysExercisedThisYear, calculatePRs } from "./components/calculate.js";
+import { exerciseLineChart, capitalizeWords } from "./components/exercise-line-chart.js";
 ```
 
----
+<!-- Load and transform data -->
+```js
+const sets = FileAttachment("data/sets.json").json();
+const workouts = FileAttachment("data/workouts.json").json();
+const target = 3
+```
 
-## Next steps
+<!-- A shared color scale for consistency, sorted by the number of launches -->
+```js
+// const color = Plot.scale({
+//   color: {
+//     type: "categorical",
+//     domain: d3.groupSort(launches, (D) => -D.length, (d) => d.state).filter((d) => d !== "Other"),
+//     unknown: "var(--theme-foreground-muted)"
+//   }
+// });
+```
 
-Here are some ideas of things you could try…
+<!-- A shared color scale for consistency -->
+```js
+// select all unique exercise names from sets
+const exercises = Array.from(new Set(sets.map((d) => d.exercise)));
+const color = Plot.scale({color: {scheme: "Tableau10", domain: exercises}});
+// Observable10
+```
 
+<!-- Calculate workout streak -->
+```js
+const streak = calculateStreak(workouts, target)
+const daysExercisedThisWeek = calculateDaysExercisedThisWeek(workouts)
+const daysExercisedThisMonth = calculateDaysExercisedThisMonth(workouts)
+const daysExercisedThisYear = calculateDaysExercisedThisYear(workouts)
+```
+
+<!-- Display workout streak on a card with big numbers -->
 <div class="grid grid-cols-4">
   <div class="card">
-    Chart your own data using <a href="https://observablehq.com/framework/lib/plot"><code>Plot</code></a> and <a href="https://observablehq.com/framework/javascript/files"><code>FileAttachment</code></a>. Make it responsive using <a href="https://observablehq.com/framework/javascript/display#responsive-display"><code>resize</code></a>.
+    <h2>Workout Streak 🔥</h2>
+    <span class="big">${streak} weeks</span>
   </div>
   <div class="card">
-    Create a <a href="https://observablehq.com/framework/routing">new page</a> by adding a Markdown file (<code>whatever.md</code>) to the <code>docs</code> folder.
+    <h2>Days exercised this week</h2>
+    <span class="big">${daysExercisedThisWeek}</span>
   </div>
   <div class="card">
-    Add a drop-down menu using <a href="https://observablehq.com/framework/javascript/inputs"><code>Inputs.select</code></a> and use it to filter the data shown in a chart.
+    <h2>Days exercised this month</h2>
+    <span class="big">${daysExercisedThisMonth}</span>
   </div>
   <div class="card">
-    Write a <a href="https://observablehq.com/framework/loaders">data loader</a> that queries a local database or API, generating a data snapshot on build.
+    <h2>Days exercised this year</h2>
+    <span class="big">${daysExercisedThisYear}</span>
   </div>
+</div>
+
+<!-- Caluclate and display PRs as a table -->
+```js
+const prs = calculatePRs(sets)
+```
+
+<div class="grid grid-cols-1">
   <div class="card">
-    Import a <a href="https://observablehq.com/framework/javascript/imports">recommended library</a> from npm, such as <a href="https://observablehq.com/framework/lib/leaflet">Leaflet</a>, <a href="https://observablehq.com/framework/lib/dot">GraphViz</a>, <a href="https://observablehq.com/framework/lib/tex">TeX</a>, or <a href="https://observablehq.com/framework/lib/duckdb">DuckDB</a>.
+    <h1 class="pb-3 font-sans font-semibold text-lg">Personal Records</h1>
+    <div class="border border-neutral-300 dark:border-neutral-700">
+      ${Inputs.table(prs, {
+        columns: [
+          "exercise",
+          "weight",
+          "reps",
+          // "notes"
+        ],
+        header: {
+          exercise: "Exercise",
+          weight: "Weight (lb)",
+          reps: "Repititions",
+          // notes: "Notes"
+        },
+        sort: "weight",
+        reverse: true,
+        align: {
+          exercise: "left",
+          weight: "center",
+          reps: "center",
+          // notes: "center"
+        },
+        format: {
+          exercise: (d) => capitalizeWords(d),
+        }
+      })}
+    </div>
   </div>
+</div>
+
+
+<!-- Display exercise line chart with inputs -->
+```js
+const exercise = view(
+  Inputs.select(
+    sets.map((d) => d.exercise),
+    {sort: true, unique: true, label: "Exercise"}
+  )
+);
+```
+
+<div class="grid grid-cols-1">
   <div class="card">
-    Ask for help, or share your work or ideas, on the <a href="https://talk.observablehq.com/">Observable forum</a>.
-  </div>
-  <div class="card">
-    Visit <a href="https://github.com/observablehq/framework">Framework on GitHub</a> and give us a star. Or file an issue if you’ve found a bug!
+    ${resize((width) => exerciseLineChart(workouts, exercise, color, {width}))}
   </div>
 </div>
