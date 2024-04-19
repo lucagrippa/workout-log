@@ -4,3 +4,4 @@
 [submodule "docs/data/fitdown-py"]
 	path = docs/data/fitdown-py
 	url = https://github.com/lucagrippa/fitdown-py.git
+	alias = fitdown
