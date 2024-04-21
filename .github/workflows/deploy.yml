@@ -1,4 +1,7 @@
-name: Deploy
+name: Deploy to Vercel
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
   # Run this workflow whenever a new commit is pushed to main.
@@ -28,5 +31,13 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Build the project
-        run: OBSERVABLE_TELEMETRY_DISABLE=true npm run build
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+      - name: Disable Observable Telemetry
+        run: OBSERVABLE_TELEMETRY_DISABLE=true
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: npm run build
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }}
