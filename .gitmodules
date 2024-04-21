@@ -1,6 +1,3 @@
 [submodule "docs/data/workouts"]
 	path = docs/data/workouts
 	url = https://github.com/lucagrippa/workouts.git
-[submodule "docs/data/fitdown-py"]
-	path = docs/data/fitdown-py
-	url = https://github.com/lucagrippa/fitdown-py.git
