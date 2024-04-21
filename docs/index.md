@@ -14,7 +14,7 @@ toc: false
 
 <!-- Imports -->
 ```js
-import { inject } from '@vercel/analytics';
+import { inject } from 'npm:@vercel/analytics';
 import { calculateStreak, calculateDaysExercisedThisWeek, calculateDaysExercisedThisMonth, calculateDaysExercisedThisYear, calculatePRs } from "./components/calculate.js";
 import { exerciseLineChart, capitalizeWords } from "./components/exercise-line-chart.js";
 ```
