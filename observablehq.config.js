@@ -30,4 +30,5 @@ export default {
   // root: "docs", // path to the source root for preview
   // output: "dist", // path to the output root for build
   // search: true, // activate search
+  cleanUrls: false // use clean URLs
 };
