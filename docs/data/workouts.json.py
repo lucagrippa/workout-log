@@ -2,20 +2,7 @@ import os
 import sys
 import json
 
-# import the fitdown parser like this due to dash in the module name
-# import importlib  
-# fitdown = importlib.import_module("fitdown-py.fitdown_parser")
-
-import importlib.util
-# import sys
-
-# # Add the parent directory to the sys.path
-# sys.path.append("..")
-
-# Import the module
-spec = importlib.util.spec_from_file_location("fitdown_parser", "docs/data/fitdown-py/fitdown_parser.py")
-fitdown_parser = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(fitdown_parser)
+from fitdown import parse
 
 # Load all workouts
 workouts_folder = "docs/data/workouts"
@@ -34,7 +21,7 @@ for workout in workouts:
         file_content = file.read()
 
     # Parse the workout file
-    workout_data = fitdown_parser.parse(file_content)
+    workout_data = parse(file_content)
     
     all_exercises[workout_date] = workout_data
 
