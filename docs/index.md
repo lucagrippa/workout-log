@@ -59,7 +59,7 @@ const daysExercisedThisYear = calculateDaysExercisedThisYear(workouts)
 ```
 
 <!-- Display workout streak on a card with big numbers -->
-<div class="grid grid-cols-4">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
   <div class="card">
     <h2>Workout Streak 🔥</h2>
     <span class="big">${streak} weeks</span>

@@ -37,7 +37,7 @@ const color = Plot.scale({color: {scheme: "Tableau10", domain: exercises}});
 // Observable10
 ```
 
-<div class="grid grid-cols-2">
+<div class="grid grid-cols-1 md:grid-cols-2">
   <div class="card">
     ${resize((width) => exerciseLineChart(workouts, exercises[0], color, {width}))}
   </div>
