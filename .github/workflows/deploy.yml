@@ -27,19 +27,17 @@ jobs:
         run: |
           echo "Checking for submodule updates...";
           git submodule update --remote --merge
-          echo "Checking for changes in submodules...";
-          git submodule foreach '
-            echo "Checking for changes in $name...";
-            remote_commit=$(git rev-parse @{upstream});
-            local_commit=$(git rev-parse HEAD);
-            if [ "$local_commit" != "$remote_commit" ]; then
-              echo "Submodule $name has been updated";
-              echo "CHANGES=true" >> $GITHUB_OUTPUT
-            else
-              echo "No submodule changes detected."
-              echo "CHANGES=false" >> $GITHUB_OUTPUT
-            fi'
-
+          
+          echo "Checking for changes in submodule...";
+          remote_commit=$(git rev-parse @{upstream});
+          local_commit=$(git rev-parse HEAD);
+          if [ "$local_commit" != "$remote_commit" ]; then
+            echo "Submodule has been updated";
+            echo "CHANGES=true" >> $GITHUB_OUTPUT
+          else
+            echo "No submodule changes detected."
+            echo "CHANGES=false" >> $GITHUB_OUTPUT
+          fi
   deploy:
     needs: check-submodule
     runs-on: ubuntu-latest
