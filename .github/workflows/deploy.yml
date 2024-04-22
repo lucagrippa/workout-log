@@ -25,7 +25,7 @@ jobs:
       - name: Check for submodule updates
         id: submodule-changes
         run: |
-          git submodule update --remote --merge  # Update submodules to the latest remote commits and merge in changes
+          git submodule update --remote --merge
           git submodule foreach '
             echo "Checking for changes in $name...";
             remote_commit=$(git rev-parse @{upstream});
@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update submodules
-        run: git submodule update --recursive --remote
+        run: git submodule update --remote --merge
 
       - name: Set up Python
         uses: actions/setup-python@v5
