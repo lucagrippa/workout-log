@@ -28,7 +28,10 @@ jobs:
         id: submodule_changes
         run: |
           changes_detected=false
+          echo "Initial value of changes_detected: $changes_detected"  # Print initial value of changes_detected
+          git submodule foreach 'echo "Output of git diff-index in $name:"; git diff-index HEAD'  # Print the output of git diff-index
           git submodule foreach 'if ! git diff-index --quiet HEAD --; then echo "Changes detected in $name"; changes_detected=true; fi'
+          echo "Final value of changes_detected: $changes_detected"  # Print final value of changes_detected
           if ${changes_detected}; then
             echo "Submodule changes detected."
             echo "{CHANGES}={true}" >> $GITHUB_OUTPUT
