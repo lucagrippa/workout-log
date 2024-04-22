@@ -37,7 +37,6 @@ jobs:
               echo "No submodule changes detected."
               echo "CHANGES=false" >> $GITHUB_OUTPUT
             fi'
-          echo "CHANGES=true" >> $GITHUB_OUTPUT
 
   deploy:
     needs: check-submodule
