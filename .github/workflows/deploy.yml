@@ -27,16 +27,15 @@ jobs:
       - name: Check for submodule changes
         id: submodule_changes
         run: |
-          if output=$(git submodule foreach 'git diff-index --quiet HEAD --'); then
-            echo "No submodule changes detected."
-            echo "Command output: $output"
-            echo "{CHANGES}={false}" >> $GITHUB_OUTPUT
-          else
+          changes_detected=false
+          git submodule foreach 'if ! git diff-index --quiet HEAD --; then echo "Changes detected in $name"; changes_detected=true; fi'
+          if $changes_detected; then
             echo "Submodule changes detected."
-            echo "Command output: $output"
             echo "{CHANGES}={true}" >> $GITHUB_OUTPUT
+          else
+            echo "No submodule changes detected."
+            echo "{CHANGES}={false}" >> $GITHUB_OUTPUT
           fi
-
 
   deploy:
     needs: check-submodule
