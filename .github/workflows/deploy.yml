@@ -26,6 +26,7 @@ jobs:
         run: |
           git submodule update --remote --merge  # Update submodules to the latest remote commits and merge in changes
           git submodule foreach '
+            echo "Checking for changes in $name...";
             remote_commit=$(git rev-parse @{upstream});
             local_commit=$(git rev-parse HEAD);
             if [ "$local_commit" != "$remote_commit" ]; then
