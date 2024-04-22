@@ -12,11 +12,54 @@ on:
   workflow_dispatch: {}
 
 jobs:
-  check-submodule:
+  # check-submodule:
+  #   runs-on: ubuntu-latest
+  #   # Map a step output to a job output
+  #   outputs:
+  #     changes: ${{ steps.submodule-changes.outputs.CHANGES }}
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Update submodules
+  #       run: git submodule update --init --recursive
+
+  #     - name: Get current submodule commit hash
+  #       id: submodule-commit
+  #       run: |
+  #         cd docs/data/workouts
+  #         echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        
+  #     - name: Get latest submodule commit hash
+  #       id: latest-commit
+  #       run: |
+  #         cd docs/data/workouts
+  #         git fetch origin
+  #         echo "commit=$(git rev-parse origin/main)" >> $GITHUB_OUTPUT
+          
+
+  #     - name: Check for submodule updates
+  #       id: submodule-changes
+  #       run: |
+  #         echo "Checking for changes in submodule...";
+  #         remote_commit=$(git rev-parse @{upstream});
+  #         local_commit=$(git rev-parse HEAD);
+  #         echo "Local commit: $local_commit"
+  #         echo "Remote commit: $remote_commit"
+  #         if [ "${{ steps.submodule-commit.outputs.commit }}" != "${{ steps.latest-commit.outputs.commit }}" ]; then
+  #         # if [ "$local_commit" != "$remote_commit" ]; then
+  #           echo "Submodule has been updated";
+  #           echo "CHANGES=true" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "No submodule changes detected."
+  #           echo "CHANGES=false" >> $GITHUB_OUTPUT
+  #         fi
+
+  deploy:
+    # needs: check-submodule
     runs-on: ubuntu-latest
-    # Map a step output to a job output
-    outputs:
-      changes: ${{ steps.submodule-changes.outputs.CHANGES }}
+    # if: ${{ needs.check-submodule.outputs.changes == 'true' }}
 
     steps:
       - name: Checkout repository
@@ -24,50 +67,6 @@ jobs:
 
       - name: Update submodules
         run: git submodule update --init --recursive
-        # echo "Checking for submodule updates...";
-        # git submodule update --init --recursive --remote --merge
-
-      - name: Get current submodule commit hash
-        id: submodule-commit
-        run: |
-          cd docs/data/workouts
-          echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
-        
-      - name: Get latest submodule commit hash
-        id: latest-commit
-        run: |
-          cd docs/data/workouts
-          git fetch origin
-          echo "commit=$(git rev-parse origin/main)" >> $GITHUB_OUTPUT
-          
-
-      - name: Check for submodule updates
-        id: submodule-changes
-        run: |
-          echo "Checking for changes in submodule...";
-          remote_commit=$(git rev-parse @{upstream});
-          local_commit=$(git rev-parse HEAD);
-          echo "Local commit: $local_commit"
-          echo "Remote commit: $remote_commit"
-          if [ "${{ steps.submodule-commit.outputs.commit }}" != "${{ steps.latest-commit.outputs.commit }}" ]; then
-          # if [ "$local_commit" != "$remote_commit" ]; then
-            echo "Submodule has been updated";
-            echo "CHANGES=true" >> $GITHUB_OUTPUT
-          else
-            echo "No submodule changes detected."
-            echo "CHANGES=false" >> $GITHUB_OUTPUT
-          fi
-  deploy:
-    needs: check-submodule
-    runs-on: ubuntu-latest
-    if: ${{ needs.check-submodule.outputs.changes == 'true' }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Update submodules
-        run: git submodule update --remote --merge
 
       - name: Set up Python
         uses: actions/setup-python@v5
