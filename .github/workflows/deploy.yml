@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update submodules
-        run: git submodule update --recursive --remote
+        run: git submodule update --remote --merge
 
       - name: Check for submodule changes
         id: submodule_changes
@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update submodules
-        run: git submodule update --recursive --remote
+        run: git submodule update --remote --merge
 
       - name: Set up Python
         uses: actions/setup-python@v5
