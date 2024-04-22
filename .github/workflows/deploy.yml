@@ -21,23 +21,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-
-      - name: Check for submodule changes
-        id: submodule_changes
+      - name: Check for submodule updates
+        id: submodule_updates
         run: |
-          changes_detected=false
-          echo "Initial value of changes_detected: $changes_detected"  # Print initial value of changes_detected
-          git submodule foreach 'echo "Output of git diff-index in $name:"; git diff-index HEAD'  # Print the output of git diff-index
-          git submodule foreach 'if ! git diff-index --quiet HEAD --; then echo "Changes detected in $name"; changes_detected=true; fi'
-          echo "Final value of changes_detected: $changes_detected"  # Print final value of changes_detected
-          if ${changes_detected}; then
-            echo "Submodule changes detected."
-            echo "{CHANGES}={true}" >> $GITHUB_OUTPUT
-          else
-            echo "No submodule changes detected."
-            echo "{CHANGES}={false}" >> $GITHUB_OUTPUT
-          fi
-          echo "Submodule changes detected: $changes_detected"
+          git submodule update --remote --merge  # Update submodules to the latest remote commits and merge in changes
+          git submodule foreach '
+            remote_commit=$(git rev-parse @{upstream});
+            local_commit=$(git rev-parse HEAD);
+            if [ "$local_commit" != "$remote_commit" ]; then
+              echo "Submodule $name has been updated";
+              echo "{CHANGES}={true}" >> $GITHUB_OUTPUT
+            else
+              echo "No submodule changes detected."
+              echo "{CHANGES}={false}" >> $GITHUB_OUTPUT
+            fi'
 
   deploy:
     needs: check-submodule
