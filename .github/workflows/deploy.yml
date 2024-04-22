@@ -26,7 +26,7 @@ jobs:
         id: submodule-changes
         run: |
           echo "Checking for submodule updates...";
-          git submodule update --remote --merge
+          git submodule update --init --recursive --remote --merge
           
           echo "Checking for changes in submodule...";
           remote_commit=$(git rev-parse @{upstream});
