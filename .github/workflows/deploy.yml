@@ -22,6 +22,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Get current submodule commit hash
+        id: submodule-commit
+        run: |
+          cd docs/data/workouts
+          echo "commit=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+        
+      - name: Get latest submodule commit hash
+        id: latest-commit
+        run: |
+          cd docs/data/workouts
+          git fetch origin
+          echo "commit=$(git rev-parse origin/main)" >> $GITHUB_OUTPUT
+          
+
       - name: Check for submodule updates
         id: submodule-changes
         run: |
@@ -33,7 +47,8 @@ jobs:
           local_commit=$(git rev-parse HEAD);
           echo "Local commit: $local_commit"
           echo "Remote commit: $remote_commit"
-          if [ "$local_commit" != "$remote_commit" ]; then
+          if [ "${{ steps.submodule-commit.outputs.commit }}" != "${{ steps.latest-commit.outputs.commit }}" ]; then
+          # if [ "$local_commit" != "$remote_commit" ]; then
             echo "Submodule has been updated";
             echo "CHANGES=true" >> $GITHUB_OUTPUT
           else
