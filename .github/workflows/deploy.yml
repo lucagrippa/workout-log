@@ -14,15 +14,16 @@ on:
 jobs:
   check-submodule:
     runs-on: ubuntu-latest
+    # Map a step output to a job output
     outputs:
-      changes: ${{ steps.submodule_changes.outputs.CHANGES }}
+      changes: ${{ steps.submodule-changes.outputs.CHANGES }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Check for submodule updates
-        id: submodule_changes
+        id: submodule-changes
         run: |
           git submodule update --remote --merge  # Update submodules to the latest remote commits and merge in changes
           git submodule foreach '
@@ -31,12 +32,12 @@ jobs:
             local_commit=$(git rev-parse HEAD);
             if [ "$local_commit" != "$remote_commit" ]; then
               echo "Submodule $name has been updated";
-              echo "{CHANGES}={true}" >> $GITHUB_OUTPUT
+              echo "CHANGES=true" >> $GITHUB_OUTPUT
             else
               echo "No submodule changes detected."
-              echo "{CHANGES}={false}" >> $GITHUB_OUTPUT
+              echo "CHANGES=false" >> $GITHUB_OUTPUT
             fi'
-          echo "{CHANGES}={true}" >> $GITHUB_OUTPUT
+          echo "CHANGES=true" >> $GITHUB_OUTPUT
 
   deploy:
     needs: check-submodule
