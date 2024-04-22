@@ -35,7 +35,7 @@ jobs:
   deploy:
     needs: check-submodule
     runs-on: ubuntu-latest
-    if: ${{ needs.check-submodule.outputs.changes == 'true' }}
+    if: ${{ needs.check-submodule.outputs.submodule_changes == 'true' }}
 
     steps:
       - name: Checkout repository
