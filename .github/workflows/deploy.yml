@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Check for submodule updates
-        id: submodule_updates
+        id: submodule_changes
         run: |
           git submodule update --remote --merge  # Update submodules to the latest remote commits and merge in changes
           git submodule foreach '
